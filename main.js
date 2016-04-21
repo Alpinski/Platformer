@@ -27,8 +27,8 @@ var fpsTime = 0;
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
-var Soldier = document.createElement("img");
-Soldier.src = "Soldier.png";
+var enemy = document.createElement("img");
+Enemy.src = "Skeleton.png";
 
 function playerShoot()
 {
@@ -37,23 +37,23 @@ function playerShoot()
 }
 
 var tileset = document.createElement("img");
-tileset.src = "tileset.png";
+tileset.src = level1.tilesets[0].image;
 
-var MAP = { tw: 60, th: 15 };
-var TILE = 35;
-var TILESET_TILE = TILE * 2;
-var TILESET_PADDING = 2;
-var TILESET_SPACING = 2;
-var TILESET_COUNT_X = 14;
-var TILESET_COUNT_Y = 14;
-
-var LAYER_COUNT = 3;
+var MAP = {tw: level1.width, th: level1.height};
+var TILE = level1.tilewidth;
+var TILESET_TILE = level1.tilesets[0].tilewidth;
+var TILESET_PADDING = level1.tilesets[0].margin;
+var TILESET_SPACING = level1.tilesets[0].spacing;
+var TILESET_COUNT_X = level1.tilesets[0].columns;
+var TILESET_COUNT_Y = level1.tilesets[0].tilecount/TILESET_COUNT_X;
+						
+var LAYER_COUNT = level1.layers.length;
 var LAYER_BACKGOUND = 0;
 var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
 
 var METER = TILE;
-var GRAVITY = METER * 9.8 * 6;
+var GRAVITY = METER * 5 * 6;
 var MAXDX = METER * 10;
 var MAXDY = METER * 15;
 var ACCEL = MAXDX * 2;
@@ -73,7 +73,7 @@ function cellAtTileCoord(layer, tx, ty)
 {
 	if(tx<0 || tx>=MAP.tw)
 	return 1;
-	if(ty>=MAP.th)
+	if(ty<0 || ty>=MAP.th)
 	return 0;
 	return cells[layer][ty][tx];
 };
@@ -101,6 +101,9 @@ function drawMap()
 {
 	for(var layerIdx=0; layerIdx<LAYER_COUNT; layerIdx++)
 	{
+		var offsetx = level1.layers[layerIdx].offsetx || 0;
+		var offsety = level1.layers[layerIdx].offsety || 0;
+		
 		var idx = 0;
 		for( var y = 0; y < level1.layers[layerIdx].height; y++ )
 		{
@@ -111,7 +114,7 @@ function drawMap()
 					var tileIndex = level1.layers[layerIdx].data[idx] - 1;
 					var sx = TILESET_PADDING + (tileIndex % TILESET_COUNT_X) * (TILESET_TILE + TILESET_SPACING);
 					var sy = TILESET_PADDING + (Math.floor(tileIndex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
-					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x*TILE, (y-1)*TILE, TILESET_TILE, TILESET_TILE);
+					context.drawImage(tileset, sx, sy, TILESET_TILE, TILESET_TILE, x * TILE + offsetx, (y-1) * TILE + offsety, TILESET_TILE, TILESET_TILE);
 				}
 			idx++;
 			}
@@ -120,7 +123,9 @@ function drawMap()
 }
 
 var player = new Player();
+var enemy = new Enemy();
 var keyboard = new Keyboard();
+var viewOffset = new Vector2();
 
 function run()
 {
@@ -129,9 +134,21 @@ function run()
 	
 	var deltaTime = getDeltaTime();
 	
-	drawMap ();
+	context.save();
+	if(player.position.x >= viewOffset.x + canvas.width/2)
+	{
+		viewOffset.x = player.position.x - canvas.width/2
+	}
+	context.translate(-viewOffset.x, 0);
+	drawMap();
+	
+	enemy.update(deltaTime);
+	enemy.draw();
+	
 	player.update(deltaTime);
 	player.draw();
+	
+	context.restore();
 	
 	fpsTime += deltaTime;
 	fpsCount++;
@@ -147,9 +164,14 @@ function run()
 	context.fillText("FPS: " + fps, 5, 20, 100);
 }
 
+var sprite;
 var cells = [];
 function initialize()
 {
+	sprite = new Sprite("ChuckNorris.png");
+	sprite.buildAnimation(7, 8, 165, 126, 0.05, [12, 13, 14, 15, 16, 17, 18, 19]); // builds the idle anim
+
+	
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) 
 	{
 		cells[layerIdx] = [];
