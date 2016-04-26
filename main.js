@@ -30,6 +30,9 @@ chuckNorris.src = "hero.png";
 var enemy = document.createElement("img");
 Enemy.src = "Skeleton.png";
 
+var Background = document.createElement("img");
+Background.src  = "Background.png";
+
 function playerShoot()
 {
 	var bullet = new Bullet()
@@ -49,15 +52,15 @@ var TILESET_COUNT_Y = level1.tilesets[0].tilecount/TILESET_COUNT_X;
 						
 var LAYER_COUNT = level1.layers.length;
 var LAYER_BACKGOUND = 0;
-var LAYER_PLATFORMS = 1;
-var LAYER_LADDERS = 2;
+var LAYER_PLATFORMS = 2;
+var LAYER_LADDERS = 1;
 
 var METER = TILE;
-var GRAVITY = METER * 5 * 6;
-var MAXDX = METER * 10;
-var MAXDY = METER * 15;
+var GRAVITY = METER * 10 * 6;
+var MAXDX = METER * 35;
+var MAXDY = METER * 25;
 var ACCEL = MAXDX * 2;
-var FRICTION = MAXDX * 6;
+var FRICTION = MAXDX * 0.5;
 var JUMP = METER * 1500;
 
 function cellAtPixelCoord(layer, x,y)
@@ -131,6 +134,7 @@ function run()
 {
 	context.fillStyle = "grey";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
+	context.drawImage(Background, 0, 0, canvas.width, canvas.height)
 	
 	var deltaTime = getDeltaTime();
 	
