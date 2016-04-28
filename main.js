@@ -17,6 +17,8 @@ function getDeltaTime()
 	return deltaTime;
 }
 
+
+
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
 
@@ -134,15 +136,25 @@ function run()
 {
 	context.fillStyle = "grey";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
-	context.drawImage(Background, 0, 0, canvas.width, canvas.height)
 	
 	var deltaTime = getDeltaTime();
+	
+	if (Background.width != 0)
+	{
+		var x =	0;
+		while(x * Background.width < SCREEN_WIDTH)
+		{
+			context.drawImage(Background, x * Background.width, 0)
+			++x;
+		}
+	}
 	
 	context.save();
 	if(player.position.x >= viewOffset.x + canvas.width/2)
 	{
 		viewOffset.x = player.position.x - canvas.width/2
 	}
+	
 	context.translate(-viewOffset.x, 0);
 	drawMap();
 	
