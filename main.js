@@ -51,6 +51,8 @@ var TILESET_PADDING = level1.tilesets[0].margin;
 var TILESET_SPACING = level1.tilesets[0].spacing;
 var TILESET_COUNT_X = level1.tilesets[0].columns;
 var TILESET_COUNT_Y = level1.tilesets[0].tilecount/TILESET_COUNT_X;
+
+var playerScore = 0;
 						
 var LAYER_COUNT = level1.layers.length;
 var LAYER_BACKGOUND = 0;
@@ -177,7 +179,13 @@ function run()
 		
 	context.fillStyle = "#f00";
 	context.font="24px impact";
-	context.fillText("FPS: " + fps, 5, 20, 100);
+	context.fillText("FPS: " + fps, 1825, 875, 100);
+	
+	context.fillStyle = "rgba(55, 55, 55, 0.75)"
+	context.fillStyle = "green";
+	context.font = "52px impact";
+	context.textBaseline = "top";
+	context.fillText(playerScore, 10,10);
 }
 
 var sprite;
