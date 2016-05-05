@@ -17,7 +17,12 @@ function getDeltaTime()
 	return deltaTime;
 }
 
+var STATE_SPLASH = 0;
+var STATE_CONTROLS = 1;
+var STATE_GAME = 2;
+var STATE_GAMEOVER = 3;
 
+var gameState = STATE_SPLASH;
 
 var SCREEN_WIDTH = canvas.width;
 var SCREEN_HEIGHT = canvas.height;
@@ -53,7 +58,8 @@ var TILESET_COUNT_X = level1.tilesets[0].columns;
 var TILESET_COUNT_Y = level1.tilesets[0].tilecount/TILESET_COUNT_X;
 
 var playerScore = 0;
-						
+var enterPressed = false;
+
 var LAYER_COUNT = level1.layers.length;
 var LAYER_BACKGOUND = 0;
 var LAYER_PLATFORMS = 2;
@@ -66,6 +72,8 @@ var MAXDY = METER * 25;
 var ACCEL = MAXDX * 2;
 var FRICTION = MAXDX * 0.5;
 var JUMP = METER * 1500;
+
+var lives = 5;
 
 function cellAtPixelCoord(layer, x,y)
 {
@@ -133,14 +141,51 @@ var player = new Player();
 var enemy = new Enemy();
 var keyboard = new Keyboard();
 var viewOffset = new Vector2();
+var Healthbar = new Healthbar();
 
-function run()
+function runSplash(deltaTime)
 {
-	context.fillStyle = "grey";		
-	context.fillRect(0, 0, canvas.width, canvas.height);
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
+	{
+		enterPressed = true
+		gameState = STATE_CONTROLS
+	}
+	context.fillStyle = "green";
+	context.font = "128px impact";
+	context.textBaseline = "bottom";
+	context.fillText("ASTEROIDS", 675, 500);
+	context.font = "52px impact"
+	context.fillText("PRESS ENTER", 815, 700)
+}
+
+function runControls(deltaTime)
+{
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
+	{
+		if (enterPressed == false)
+		gameState = STATE_GAME
+	}
 	
-	var deltaTime = getDeltaTime();
+	else
+	{
+		enterPressed = false
+	}
 	
+	context.fillStyle = "green";
+	context.font="128px impact";
+	context.textBaseline = "bottom";
+	context.fillText("CONTROLS", 675, 150);
+	context.font="72px impact";
+	context.fillText("ARROW KEYS = MOVEMENT AND ROTATION", 425, 275)
+	context.fillText("SPACE = SHOOT", 425, 400)
+	context.fillText("Z = NUKE", 425, 525)
+	context.fillText("A = STRAFE LEFT", 425, 650)
+	context.fillText("D = STRAFE RIGHT", 425, 775)
+	context.fillText("ENTER = ADVANCE TO GAME", 425, 900)
+}
+
+function runGame(deltaTime)
+{
 	if (Background.width != 0)
 	{
 		var x =	0;
@@ -168,6 +213,9 @@ function run()
 	
 	context.restore();
 	
+	Healthbar.UpdateHealth();
+	Healthbar.draw(context)
+	
 	fpsTime += deltaTime;
 	fpsCount++;
 	if(fpsTime >= 1)
@@ -186,6 +234,46 @@ function run()
 	context.font = "52px impact";
 	context.textBaseline = "top";
 	context.fillText(playerScore, 10,10);
+}
+
+function runGameOver(deltaTime)
+{
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
+	{
+		gameState = STATE_SPLASH
+	}
+	context.fillStyle = "green";
+	context.font = "128px impact";
+	context.textBaseline = "middle";
+	context.fillText("GAME OVER", 655, 375);
+	context.fillText(playerScore, 890, 520);
+	context.font = "52px impact";
+	context.fillText("PRESS ENTER", 815, 900)
+}
+
+function run()
+{
+	context.fillStyle = "grey";		
+	context.fillRect(0, 0, canvas.width, canvas.height);
+	
+	var deltaTime = getDeltaTime();
+	
+	switch(gameState)
+	
+		{
+			case STATE_SPLASH:
+				runSplash(deltaTime);
+				break;
+			case STATE_CONTROLS:
+				runControls(deltaTime);
+				break;
+			case STATE_GAME:
+				runGame(deltaTime);
+				break;
+			case STATE_GAMEOVER:
+				runGameOver(deltaTime);
+				break;
+		}
 }
 
 var sprite;
