@@ -9,11 +9,16 @@ var ANIM_JUMP_RIGHT = 4;
 var ANIM_WALK_RIGHT = 5;
 var ANIM_MAX = 6;
 
+var spacePressed = false;
+
 var Player = function() 
-{	
+{
+	this.cooldownTimer = 0;
+	
 	this.scale = new Vector2(.75 ,.75)
 
 	this.sprite = new Sprite("ChuckNorris.png");
+	
 	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [0, 1, 2, 3, 4, 5, 6, 7]);
 	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [8, 9, 10, 11, 12]);
 	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]);
@@ -34,6 +39,8 @@ var Player = function()
 	this.height = 163;
 	
 	this.velocity = new Vector2();
+	
+	this.direction = LEFT;
 	
 	this.falling = true;
 	this.jumping = false;
@@ -86,16 +93,29 @@ Player.prototype.update = function(deltaTime)
 	
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
 	{
-		jump = true;
-		if(left == true)
+		if (spacePressed == true)
+		iShoot = true;
+		else
 		{
-			this.sprite.setAnimation(ANIM_JUMP_LEFT);
-		}
-		if(right == true)
-		{
-			this.sprite.setAnimation(ANIM_JUMP_RIGHT);
+			spacePressed = false
 		}
 	}
+	
+	
+	if(keyboard.isKeyDown(keyboard.KEY_UP) == true) 
+	{
+		jump = true;
+	}
+	if(this.cooldownTimer > 0)
+	{
+		this.cooldownTimer -= deltaTime;
+	}
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true && this.cooldownTimer <= 0) 
+	{
+		sfxFire.play();
+		this.cooldownTimer = 0.3;
+	}
+
 	
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.x > 0;
@@ -186,7 +206,6 @@ Player.prototype.update = function(deltaTime)
 	}
 
 	player.falling = ! (celldown || (nx && celldiag));
-
 }
 
 Player.prototype.draw = function()

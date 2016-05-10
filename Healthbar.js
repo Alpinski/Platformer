@@ -1,7 +1,7 @@
 var Healthbar = function () 
 {
 	this.position = new Vector2();
-	this.position.set( 19, 20 );
+	this.position.set( -50, -100);
 	
 	this.images = [];
 	this.images[0] = document.createElement("img");

@@ -42,7 +42,7 @@ Background.src  = "Background.png";
 
 function playerShoot()
 {
-	var bullet = new Bullet()
+	var bullet = new Bullet(player.position.x, player.position.y, player.direction == RIGHT)
 	bullets.push(bullet);
 }
 
@@ -142,7 +142,12 @@ var enemy = new Enemy();
 var keyboard = new Keyboard();
 var viewOffset = new Vector2();
 var Healthbar = new Healthbar();
+var bullet = new Bullet();
 
+var bullets = [];
+var iShoot = false;
+var shootTimer = 0;
+var shootRate = 0.3;
 function runSplash(deltaTime)
 {
 	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
@@ -211,6 +216,14 @@ function runGame(deltaTime)
 	player.update(deltaTime);
 	player.draw();
 	
+	for(var i=0; i<bullets.length; i++)
+		{
+		bullets[i].update(deltaTime);
+		bullets[i].draw();
+		}
+	bullet.update(deltaTime);
+	bullet.draw();
+	
 	context.restore();
 	
 	Healthbar.UpdateHealth();
@@ -233,7 +246,16 @@ function runGame(deltaTime)
 	context.fillStyle = "green";
 	context.font = "52px impact";
 	context.textBaseline = "top";
-	context.fillText(playerScore, 10,10);
+	context.fillText(playerScore, 900,10);
+ 
+	if(iShoot && shootTimer <= 0)
+		{
+		shootTimer = shootRate;
+		playerShoot();
+		}
+		
+	if(shootTimer > 0)
+	shootTimer -= deltaTime;
 }
 
 function runGameOver(deltaTime)
@@ -278,6 +300,8 @@ function run()
 
 var sprite;
 var cells = [];
+var musicBackground;
+var sfxFire;
 function initialize()
 {
 	sprite = new Sprite("ChuckNorris.png");
@@ -308,6 +332,26 @@ function initialize()
 			}
 		}
 	}
+	musicBackground = new Howl(
+	{
+		urls: ["background.ogg"],
+		loop: true,
+		buffer: true,
+		volume: 0.5
+	} );
+	musicBackground.play();
+	
+	sfxFire = new Howl(
+		{
+			urls: ["fireEffect.ogg"],
+			buffer: true,
+			volume: 1,
+			onend: function() 
+			{
+				isSfxPlaying = false;
+			}
+		} );
+
 }
 
 initialize();
