@@ -217,12 +217,10 @@ function runGame(deltaTime)
 	player.draw();
 	
 	for(var i=0; i<bullets.length; i++)
-		{
+	{
 		bullets[i].update(deltaTime);
 		bullets[i].draw();
-		}
-	bullet.update(deltaTime);
-	bullet.draw();
+	}
 	
 	context.restore();
 	

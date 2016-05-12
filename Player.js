@@ -9,8 +9,6 @@ var ANIM_JUMP_RIGHT = 4;
 var ANIM_WALK_RIGHT = 5;
 var ANIM_MAX = 6;
 
-var spacePressed = false;
-
 var Player = function() 
 {
 	this.cooldownTimer = 0;
@@ -93,14 +91,12 @@ Player.prototype.update = function(deltaTime)
 	
 	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
 	{
-		if (spacePressed == true)
 		iShoot = true;
-		else
-		{
-			spacePressed = false
-		}
 	}
-	
+		else
+	{
+		iShoot = false;
+	}
 	
 	if(keyboard.isKeyDown(keyboard.KEY_UP) == true) 
 	{
