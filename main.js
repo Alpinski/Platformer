@@ -73,6 +73,14 @@ var ACCEL = MAXDX * 2;
 var FRICTION = MAXDX * 0.5;
 var JUMP = METER * 1500;
 
+var ENEMY_MAXDX = METER * 2;
+var ENEMY_ACCEL = ENEMY_MAXDX * 2;
+
+var enemies = [];
+
+var LAYER_OBJECT_ENEMIES = 3;
+var LAYER_OBJECT_TRIGGERS = 4;
+
 var lives = 5;
 
 function cellAtPixelCoord(layer, x,y)
@@ -138,7 +146,6 @@ function drawMap()
 }
 
 var player = new Player();
-var enemy = new Enemy();
 var keyboard = new Keyboard();
 var viewOffset = new Vector2();
 var Healthbar = new Healthbar();
@@ -210,8 +217,11 @@ function runGame(deltaTime)
 	context.translate(-viewOffset.x, 0);
 	drawMap();
 	
-	enemy.update(deltaTime);
-	enemy.draw();
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+		enemies[i].draw();
+	}	
 	
 	player.update(deltaTime);
 	player.draw();
@@ -245,12 +255,17 @@ function runGame(deltaTime)
 	context.font = "52px impact";
 	context.textBaseline = "top";
 	context.fillText(playerScore, 900,10);
+	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+	}
  
 	if(iShoot && shootTimer <= 0)
-		{
+	{
 		shootTimer = shootRate;
 		playerShoot();
-		}
+	}
 		
 	if(shootTimer > 0)
 	shootTimer -= deltaTime;
@@ -339,7 +354,8 @@ function initialize()
 	} );
 	musicBackground.play();
 	
-	sfxFire = new Howl(
+	sfxFire = new Howl
+	(
 		{
 			urls: ["fireEffect.ogg"],
 			buffer: true,
@@ -348,8 +364,24 @@ function initialize()
 			{
 				isSfxPlaying = false;
 			}
-		} );
-
+		}
+	)
+	
+	idx = 0;
+	for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++)
+	{
+		for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++)
+		{
+			if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0)
+			{
+				var px = tileToPixel(x);
+				var py = tileToPixel(y);
+				var e = new Enemy(px, py);
+				enemies.push(e);
+			}
+			idx++;
+		}
+	}
 }
 
 initialize();
