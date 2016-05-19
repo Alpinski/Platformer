@@ -1,14 +1,15 @@
-
-var ANIM_WALK_RIGHT = 5;
-var ANIM_WALK_LEFT = 2;
+var walkRight = 0;
+var walkLeft = 1;
 
 var Enemy = function(x, y)
 {
-	this.sprite = new Sprite("turtle3.png");
 
-	this.sprite.buildAnimation(11, 4, 139, 143, 0.25, [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]);
-	this.sprite.buildAnimation(11, 4, 139, 143, 0.25, [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 ]);
+	this.sprite = new Sprite("Runallog.png");
+
+	this.sprite.buildAnimation(5, 3, 645, 545, 0.18, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
 	this.sprite.setAnimationOffset(0, -43, -43);
+	this.sprite.buildAnimation(5, 3, 645, 545, 0.18, [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
+	this.sprite.setAnimationOffset(1, -43, -43);
 	
 	this.image = document.createElement("img");
 	this.position = new Vector2(); 	
@@ -27,7 +28,7 @@ var Enemy = function(x, y)
 	this.moveRight = true;
 	this.pause = 0;
 	
-	this.image.src = "turtle.png";
+	this.image.src = "Runallog.png";
 	SetupImageEvents(this, this.image);
 };
 
@@ -40,40 +41,44 @@ Enemy.prototype.update = function(deltaTime)
 		}
 	else
 	{
-		var ddx = 0; // acceleration
+		var ddx = 0;
 		var tx = pixelToTile(this.position.x);
 		var ty = pixelToTile(this.position.y);
-		var nx = (this.position.x)%TILE; // true if enemy overlaps right
-		var ny = (this.position.y)%TILE; // true if enemy overlaps below
+		var nx = (this.position.x)%TILE;
+		var ny = (this.position.y)%TILE;
 		var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
 		var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
 		var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
 		var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
-		if(this.moveRight)
+		
+	if(this.moveRight)
 	{
 		if(celldiag && !cellright) 
 		{
-			ddx = ddx + ENEMY_ACCEL; // enemy wants to go right
+			ddx = ddx + ENEMY_ACCEL;
 		}
 		else 
 		{
 			this.velocity.x = 0;
 			this.moveRight = false;
 			this.pause = 0.5;
+			this.sprite.setAnimation(walkLeft);
 		}
 	}
 	if(!this.moveRight)
 	{
 		if(celldown && !cell) 
 		{
-			ddx = ddx - ENEMY_ACCEL; // enemy wants to go left
+			ddx = ddx - ENEMY_ACCEL;
 		}
 		else 
 		{
 			this.velocity.x = 0;
 			this.moveRight = true;
 			this.pause = 0.5;
+			this.sprite.setAnimation(walkRight);
 		}
+		
 	}
 		this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
 		this.velocity.x = bound(this.velocity.x + (deltaTime * ddx),
@@ -84,5 +89,5 @@ Enemy.prototype.update = function(deltaTime)
 
 Enemy.prototype.draw = function()
 {
-	this.sprite.draw(context, this.position.x, this.position.y);
+	this.sprite.draw(context, this.position.x, this.position.y)
 }

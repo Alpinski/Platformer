@@ -162,10 +162,10 @@ function runSplash(deltaTime)
 		enterPressed = true
 		gameState = STATE_CONTROLS
 	}
-	context.fillStyle = "green";
+	context.fillStyle = "#33ccff";
 	context.font = "128px impact";
 	context.textBaseline = "bottom";
-	context.fillText("ASTEROIDS", 675, 500);
+	context.fillText("Bounce", 750, 500);
 	context.font = "52px impact"
 	context.fillText("PRESS ENTER", 815, 700)
 }
@@ -183,16 +183,13 @@ function runControls(deltaTime)
 		enterPressed = false
 	}
 	
-	context.fillStyle = "green";
+	context.fillStyle = "#33ccff";
 	context.font="128px impact";
 	context.textBaseline = "bottom";
 	context.fillText("CONTROLS", 675, 150);
 	context.font="72px impact";
-	context.fillText("ARROW KEYS = MOVEMENT AND ROTATION", 425, 275)
+	context.fillText("ARROW KEYS = MOVEMENT AND JUMP", 425, 275)
 	context.fillText("SPACE = SHOOT", 425, 400)
-	context.fillText("Z = NUKE", 425, 525)
-	context.fillText("A = STRAFE LEFT", 425, 650)
-	context.fillText("D = STRAFE RIGHT", 425, 775)
 	context.fillText("ENTER = ADVANCE TO GAME", 425, 900)
 }
 
@@ -209,6 +206,7 @@ function runGame(deltaTime)
 	}
 	
 	context.save();
+	
 	if(player.position.x >= viewOffset.x + canvas.width/2)
 	{
 		viewOffset.x = player.position.x - canvas.width/2
@@ -216,13 +214,7 @@ function runGame(deltaTime)
 	
 	context.translate(-viewOffset.x, 0);
 	drawMap();
-	
-	for(var i=0; i<enemies.length; i++)
-	{
-		enemies[i].update(deltaTime);
-		enemies[i].draw();
-	}	
-	
+
 	player.update(deltaTime);
 	player.draw();
 	
@@ -231,6 +223,12 @@ function runGame(deltaTime)
 		bullets[i].update(deltaTime);
 		bullets[i].draw();
 	}
+	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+		enemies[i].draw();
+	}	
 	
 	context.restore();
 	
