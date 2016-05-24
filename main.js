@@ -215,8 +215,6 @@ function runGame(deltaTime)
 	context.translate(-viewOffset.x, 0);
 	drawMap();
 
-	player.update(deltaTime);
-	player.draw();
 	
 	for(var i=0; i<bullets.length; i++)
 	{
@@ -224,16 +222,13 @@ function runGame(deltaTime)
 		bullets[i].draw();
 	}
 	
-	for(var i=0; i<enemies.length; i++)
-	{
-		enemies[i].update(deltaTime);
-		enemies[i].draw();
-	}	
-	
-	context.restore();
+	player.update(deltaTime);
+	player.draw();
 	
 	Healthbar.UpdateHealth();
 	Healthbar.draw(context)
+	
+	context.restore();
 	
 	fpsTime += deltaTime;
 	fpsCount++;
@@ -315,8 +310,8 @@ var musicBackground;
 var sfxFire;
 function initialize()
 {
-	sprite = new Sprite("ChuckNorris.png");
-	sprite.buildAnimation(7, 8, 165, 126, 0.05, [12, 13, 14, 15, 16, 17, 18, 19]); // builds the idle anim
+	sprite = new Sprite("SwordsmanIdle.png");
+	sprite.buildAnimation(3, 4, 537, 531, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]); // builds the idle anim
 
 	
 	for(var layerIdx = 0; layerIdx < LAYER_COUNT; layerIdx++) 

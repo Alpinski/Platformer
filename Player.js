@@ -13,28 +13,41 @@ var Player = function()
 {
 	this.cooldownTimer = 0;
 	
-	this.scale = new Vector2(.75 ,.75)
+	this.scale = new Vector2(0.5 ,0.5)
 
-	this.sprite = new Sprite("ChuckNorris.png");
+	this.sprite = new Sprite("SwordsmanIdleRight.png");
 	
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [0, 1, 2, 3, 4, 5, 6, 7]);
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [8, 9, 10, 11, 12]);
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]);
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [52, 53, 54, 55, 56, 57, 58, 59]);
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [60, 61, 62, 63, 64]);
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.05, [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78]);
+	this.sprites = [];
 	
-	for(var i=0; i<ANIM_MAX; i++)
-	{
-		this.sprite.setAnimationOffset(i, -55, -87);
-	}
+	this.sprites[ANIM_IDLE_RIGHT] = new Sprite("SwordsmanIdleRight.png");
+	this.sprites[ANIM_IDLE_RIGHT].buildAnimation(5, 7, 162, 162, 0.05, [34, 32, 30, 24, 22, 20, 14, 12, 10, 4, 2, 0]);
+	this.sprites[ANIM_IDLE_RIGHT].setAnimationOffset( 0, -30, -115);
+	
+	this.sprite = new Sprite("SwordsmanIdleL.png");
+	this.sprites[ANIM_IDLE_LEFT] = new Sprite("SwordsmanIdleL.png")
+	this.sprites[ANIM_IDLE_LEFT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
+	this.sprites[ANIM_IDLE_LEFT].setAnimationOffset( 0, -30, -115);
+	
+	this.sprite = new Sprite("Runright.png");
+	this.sprites[ANIM_WALK_RIGHT] = new Sprite("Runright.png")
+	this.sprites[ANIM_WALK_RIGHT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
+	this.sprites[ANIM_WALK_RIGHT].setAnimationOffset( 0, -30, -115);
+	
+	this.sprite = new Sprite("Runleft.png");
+	this.sprites[ANIM_WALK_LEFT] = new Sprite("Runleft.png")
+	this.sprites[ANIM_WALK_LEFT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
+	this.sprites[ANIM_WALK_LEFT].setAnimationOffset( 0, -30, -115);
+	
+	
 
 	this.image = document.createElement("img");
 	this.position = new Vector2(); 	
-	this.position.set(1*TILE, 16*TILE);
+	this.position.set(1*TILE, 9*TILE);
 	
-	this.width = 159;
-	this.height = 163;
+	this.width = 540;
+	this.height = 536;
+	
+	this.animState = ANIM_IDLE_RIGHT
 	
 	this.velocity = new Vector2();
 	
@@ -48,7 +61,7 @@ var Player = function()
 
 Player.prototype.update = function(deltaTime)
 {
-	this.sprite.update(deltaTime);
+	this.sprites[this.animState].update(deltaTime);
 	
 	var left = false;
 	var right = false;
@@ -58,18 +71,18 @@ Player.prototype.update = function(deltaTime)
 	{
 		left = true;
 		this.direction = LEFT;
-		if(this.sprite.currentAnimation != ANIM_WALK_LEFT &&
+		if(this.animState != ANIM_WALK_LEFT &&
 			this.jumping == false)
-			this.sprite.setAnimation(ANIM_WALK_LEFT);
+			this.animState = ANIM_WALK_LEFT;
 	}
 
 	else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true) 
 	{
 		right = true;
 		this.direction = RIGHT;
-		if(this.sprite.currentAnimation != ANIM_WALK_RIGHT &&
+		if(this.animState != ANIM_WALK_RIGHT &&
 			this.jumping == false)
-			this.sprite.setAnimation(ANIM_WALK_RIGHT);
+			this.animState = ANIM_WALK_RIGHT
 	}
 	
 	else 
@@ -78,13 +91,13 @@ Player.prototype.update = function(deltaTime)
 		{
 			if(this.direction == LEFT)
 			{	
-				if(this.sprite.currentAnimation != ANIM_IDLE_LEFT)
-				this.sprite.setAnimation(ANIM_IDLE_LEFT);
+				if(this.animState != ANIM_IDLE_LEFT)
+				this.animState = ANIM_IDLE_LEFT;
 			}
 			else
 			{
-				if(this.sprite.currentAnimation != ANIM_IDLE_RIGHT)
-				this.sprite.setAnimation(ANIM_IDLE_RIGHT);
+				if(this.animState != ANIM_IDLE_RIGHT)
+					this.animState = ANIM_IDLE_RIGHT;
 			}
 		}
 	}
@@ -206,6 +219,5 @@ Player.prototype.update = function(deltaTime)
 
 Player.prototype.draw = function()
 {
-	this.sprite.draw(context, this.position.x, this.position.y);
-	DrawImage(context, this.image, this.position.x, this.position.y, 0, this.scale.x, this.scale.y)
+	this.sprites[this.animState].draw(context, this.position.x, this.position.y);
 }
