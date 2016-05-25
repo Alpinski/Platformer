@@ -14,11 +14,10 @@ var Player = function()
 	this.cooldownTimer = 0;
 	
 	this.scale = new Vector2(0.5 ,0.5)
-
-	this.sprite = new Sprite("SwordsmanIdleRight.png");
 	
 	this.sprites = [];
 	
+	this.sprite = new Sprite("SwordsmanIdleRight.png");
 	this.sprites[ANIM_IDLE_RIGHT] = new Sprite("SwordsmanIdleRight.png");
 	this.sprites[ANIM_IDLE_RIGHT].buildAnimation(5, 7, 162, 162, 0.05, [34, 32, 30, 24, 22, 20, 14, 12, 10, 4, 2, 0]);
 	this.sprites[ANIM_IDLE_RIGHT].setAnimationOffset( 0, -30, -115);
@@ -37,6 +36,11 @@ var Player = function()
 	this.sprites[ANIM_WALK_LEFT] = new Sprite("Runleft.png")
 	this.sprites[ANIM_WALK_LEFT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
 	this.sprites[ANIM_WALK_LEFT].setAnimationOffset( 0, -30, -115);
+	
+	this.sprite = new Sprite("Jupright.png");
+	this.sprites[ANIM_JUMP_RIGHT] = new Sprite("Jumpright.png")
+	this.sprites[ANIM_JUMP_RIGHT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
+	this.sprites[ANIM_JUMP_RIGHT].setAnimationOffset( 0, -30, -115);
 	
 	
 
@@ -149,7 +153,7 @@ Player.prototype.update = function(deltaTime)
 		if(this.direction == LEFT)
 			this.sprite.setAnimation(ANIM_JUMP_LEFT)
 		else
-			this.sprite.setAnimation(ANIM_JUMP_RIGHT)
+			this.animState = ANIM_JUMP_RIGHT;
 		}
 		
 	this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
