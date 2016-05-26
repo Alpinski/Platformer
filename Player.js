@@ -37,10 +37,15 @@ var Player = function()
 	this.sprites[ANIM_WALK_LEFT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
 	this.sprites[ANIM_WALK_LEFT].setAnimationOffset( 0, -30, -115);
 	
-	this.sprite = new Sprite("Jupright.png");
+	this.sprite = new Sprite("Jumpright.png");
 	this.sprites[ANIM_JUMP_RIGHT] = new Sprite("Jumpright.png")
-	this.sprites[ANIM_JUMP_RIGHT].buildAnimation(5, 7, 162, 162, 0.05, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32, 34]);
+	this.sprites[ANIM_JUMP_RIGHT].buildAnimation(5, 7, 162, 162, 0.075, [0, 2, 4, 10, 12, 14, 20, 22, 24, 30, 32]);
 	this.sprites[ANIM_JUMP_RIGHT].setAnimationOffset( 0, -30, -115);
+	
+	this.sprite = new Sprite("Jumpleft.png");
+	this.sprites[ANIM_JUMP_LEFT] = new Sprite("Jumpleft.png")
+	this.sprites[ANIM_JUMP_LEFT].buildAnimation(5, 7, 162, 162, 0.075, [4, 2, 0, 14, 12, 10, 24, 22, 20, 32, 30]);
+	this.sprites[ANIM_JUMP_LEFT].setAnimationOffset( 0, -30, -115);
 	
 	
 
@@ -151,7 +156,7 @@ Player.prototype.update = function(deltaTime)
 		ddy = ddy - JUMP;
 		this.jumping = true;
 		if(this.direction == LEFT)
-			this.sprite.setAnimation(ANIM_JUMP_LEFT)
+			this.animState = ANIM_JUMP_LEFT;
 		else
 			this.animState = ANIM_JUMP_RIGHT;
 		}

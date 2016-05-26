@@ -4,12 +4,12 @@ var walkLeft = 1;
 var Enemy = function(x, y)
 {
 
-	this.sprite = new Sprite("Runallog.png");
+	this.sprite = new Sprite("monsterLR.png");
 
-	this.sprite.buildAnimation(5, 3, 645, 545, 0.18, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
-	this.sprite.setAnimationOffset(0, -43, -43);
-	this.sprite.buildAnimation(5, 3, 645, 545, 0.18, [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]);
-	this.sprite.setAnimationOffset(1, -43, -43);
+	this.sprite.buildAnimation(1, 2, 110, 99, 0.5, [0]);
+	this.sprite.setAnimationOffset(0, -43, -53);
+	this.sprite.buildAnimation(5, 3, 110, 99, 0.5, [1]);
+	this.sprite.setAnimationOffset(1, -43, -53);
 	
 	this.image = document.createElement("img");
 	this.position = new Vector2(); 	
@@ -28,7 +28,7 @@ var Enemy = function(x, y)
 	this.moveRight = true;
 	this.pause = 0;
 	
-	this.image.src = "Runallog.png";
+	this.image.src = "monsterLR.png";
 	SetupImageEvents(this, this.image);
 };
 

@@ -150,7 +150,7 @@ var keyboard = new Keyboard();
 var viewOffset = new Vector2();
 var Healthbar = new Healthbar();
 var bullet = new Bullet();
-
+var enemies = [];
 var bullets = [];
 var iShoot = false;
 var shootTimer = 0;
@@ -224,6 +224,12 @@ function runGame(deltaTime)
 	
 	player.update(deltaTime);
 	player.draw();
+	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime);
+		enemies[i].draw();
+	}
 	
 	Healthbar.UpdateHealth();
 	Healthbar.draw(context)
